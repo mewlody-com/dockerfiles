@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: project-zomboid
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: project-zomboid
+  name: project-zomboid-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project-zomboid-server
+  template:
+    metadata:
+      labels:
+        app: project-zomboid-server
+    spec:
+      containers:
+      - image: "mewlody/project-zomboid-server:41.68"
+        name: project-zomboid-server
+        env:
+        - name: PASSWORD
+          value: "PASSWORD"
+        volumeMounts:
+        - name: zomboid
+          mountPath: /root/Zomboid
+        - name: steamapps
+          mountPath: /root/ZomboidServer/steamapps
+      volumes:
+      - name: zomboid
+        hostPath:
+          path: /root/games/ProjectZomboid/Zomboid
+      - name: steamapps
+        hostPath:
+          path: /root/games/ProjectZomboid/ZomboidServer/steamapps
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: project-zomboid
+  name: project-zomboid-server
+spec:
+  selector:
+    app: project-zomboid-server
+  type: NodePort
+  ports:
+    - port: 16261
+      protocol: UDP
+      targetPort: 16261
+      nodePort: 16261
