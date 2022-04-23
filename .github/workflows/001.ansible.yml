@@ -1,0 +1,22 @@
+name: ansible
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: docker/login-action@v1.14.1
+        with:
+          username: mewlody
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: bash build.sh
+        run: |
+          cd 001.ansible
+          bash build.sh
