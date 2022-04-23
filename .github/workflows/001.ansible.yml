@@ -1,4 +1,4 @@
-name: ansible
+name: 001.ansible
 
 on:
   schedule:
